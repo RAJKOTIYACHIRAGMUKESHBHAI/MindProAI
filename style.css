@@ -1,0 +1,562 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: 'Inter', 'Segoe UI', sans-serif;
+}
+
+body {
+    background: #f3f4f6;
+    height: 100vh;
+    overflow: hidden;
+}
+
+/* Auth pages */
+.auth-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background: linear-gradient(135deg, #111827 0%, #374151 100%);
+}
+
+.login-box {
+    background: white;
+    padding: 40px;
+    border-radius: 14px;
+    width: 380px;
+    box-shadow: 0 20px 35px rgba(0, 0, 0, 0.2);
+    text-align: center;
+}
+
+.login-box h2 {
+    margin-bottom: 8px;
+    color: #111827;
+}
+
+.login-box p {
+    margin-bottom: 20px;
+    color: #6b7280;
+}
+
+.login-box input {
+    width: 100%;
+    padding: 14px;
+    margin-bottom: 18px;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    font-size: 16px;
+}
+
+.login-box button {
+    width: 100%;
+    padding: 14px;
+    background: #2563eb;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+/* Layout */
+.app-container {
+    display: flex;
+    height: 100vh;
+}
+
+/* Sidebar */
+/* --- Updated Sidebar CSS --- */
+
+.chat-item {
+    padding: 12px;
+    border-radius: 6px;
+    margin-bottom: 5px;
+    cursor: pointer;
+    color: #cbd5e1;
+
+    /* In 3 lines se text aur buttons ek line mein aayenge */
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    transition: all 0.2s ease;
+}
+
+.chat-item:hover,
+.chat-item.active {
+    background: #334155;
+    color: white;
+}
+
+/* Chat title ko space dene ke liye */
+.chat-title {
+    flex: 1;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin-right: 10px;
+}
+
+/* Actions (Pin/Delete) Container */
+.chat-actions {
+    display: none;
+    /* Default mein buttons chhupa do */
+    gap: 8px;
+    align-items: center;
+}
+
+/* Jab chat-item par mouse jaye, tab buttons dikhao */
+.chat-item:hover .chat-actions {
+    display: flex;
+}
+
+/* Buttons ki styling */
+.chat-actions button {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    font-size: 14px;
+    padding: 2px;
+    opacity: 0.7;
+    transition: opacity 0.2s, transform 0.2s;
+}
+
+.chat-actions button:hover {
+    opacity: 1;
+    transform: scale(1.2);
+    /* Hover karne par thoda bada dikhega */
+}
+
+/* Agar pinned hai toh icon ko thoda highlight karne ke liye (Optional) */
+.pinned-active {
+    color: #fbbf24;
+    /* Yellow color for pin */
+}
+
+/* Chat window */
+.chat-window {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    background: white;
+}
+
+.chat-header {
+    padding: 20px 30px;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.message-area {
+    flex: 1;
+    padding: 30px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    background: #f8fafc;
+}
+
+/* Messages */
+.message {
+    padding: 14px 20px;
+    border-radius: 12px;
+    line-height: 1.6;
+    font-size: 15px;
+    word-wrap: break-word;
+    white-space: normal;
+}
+
+.user-message {
+    background: #2563eb;
+    color: white;
+    align-self: flex-end;
+    max-width: 75%;
+}
+
+.ai-message {
+    background: white;
+    color: #111827;
+    border: 1px solid #e2e8f0;
+    align-self: flex-start;
+    width: 100%;
+    max-width: 100%;
+    overflow: visible;
+}
+
+pre,
+code {
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    overflow-x: hidden;
+}
+
+/* Input */
+.input-area {
+    padding: 20px 30px;
+    border-top: 1px solid #e2e8f0;
+    display: flex;
+    gap: 12px;
+}
+
+#msg-input {
+    flex: 1;
+    padding: 16px;
+    border: 1px solid #cbd5e1;
+    border-radius: 10px;
+}
+
+.input-area button {
+    padding: 0 25px;
+    background: #2563eb;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+}
+
+/* Popup Styling */
+.popup-toast {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    /* Agar center me chahiye to right hata kar left: 50% aur transform: translateX(-50%) likhein */
+    background-color: #4ade80;
+    /* Aapke theme ka green color */
+    color: #000;
+    padding: 15px 25px;
+    border-radius: 8px;
+    font-weight: bold;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+    opacity: 0;
+    transition: opacity 0.5s ease-in-out;
+    /* Smooth fade-in/fade-out ke liye */
+}
+
+.popup-toast.show {
+    display: block !important;
+    opacity: 1;
+}
+
+/* Sidebar improvement */
+.sidebar {
+    background: rgba(15, 23, 42, 0.95);
+    backdrop-filter: blur(10px);
+    border-right: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Chat bubble styling */
+.message {
+    max-width: 80%;
+    padding: 12px 16px;
+    border-radius: 15px;
+    font-size: 0.95rem;
+    line-height: 1.5;
+    margin-bottom: 15px;
+    animation: fadeIn 0.3s ease;
+}
+
+.user-message {
+    background: linear-gradient(135deg, #3b82f6, #2563eb);
+    color: white;
+    align-self: flex-end;
+    border-bottom-right-radius: 2px;
+}
+
+.ai-message {
+    background: #1e293b;
+    color: #e2e8f0;
+    align-self: flex-start;
+    border-bottom-left-radius: 2px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Input Area */
+.input-container {
+    background: #0f172a;
+    padding: 20px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+#msg-input {
+    background: #1e293b;
+    border: 1px solid #334155;
+    color: white;
+    padding: 12px 20px;
+    border-radius: 25px;
+}
+
+.option-box:hover {
+    transform: scale(1.1);
+    transition: 0.3s;
+}
+
+.auth-options {
+    padding: 20px 0;
+    border-top: 1px solid #eee;
+}
+
+/* Input container ko flex banayein taaki sab ek line mein rahe */
+.chat-input-container {
+    display: flex;
+    gap: 10px;
+    /* Input aur dono buttons ke beech gap */
+    align-items: center;
+    /* Aapki baki existing styles yahan rehne dein */
+}
+
+/* Msg input box ko set karein taaki wo bachi hui jagah le le */
+#msg-input {
+    flex-grow: 1;
+    /* Aapki existing input styles... */
+}
+
+/* Dono buttons (New Chat aur Send) ko ek jaisa design dein */
+#new-chat-btn,
+#send-btn {
+    background-color: #2563eb;
+    /* Send button ka blue color (apne hisaab se adjust karein) */
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 8px;
+    /* Rounded corners */
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+/* Hover effect */
+#new-chat-btn:hover,
+#send-btn:hover {
+    background-color: #1d4ed8;
+    /* Hover par thoda dark blue */
+}
+
+/* Optional: New chat button ka color thoda alag rakhna ho to (e.g. green or grey) */
+/*
+#new-chat-btn {
+    background-color: #4b5563; 
+}
+#new-chat-btn:hover {
+    background-color: #374151;
+}
+*/
+
+/* Header ko flex banayein taaki title left aur avatar right mein rahe */
+.chat-header {
+    display: flex;
+    justify-content: space-between;
+    /* Dono ko ek doosre se door push karega */
+    align-items: center;
+    padding: 10px 20px;
+    border-bottom: 1px solid #e5e7eb;
+    /* Optional line neeche */
+}
+
+/* Avatar circle ka design */
+/* Puri bar ko top par chipkane ke liye */
+.top-bar {
+    position: fixed;
+    top: 0;
+    right: 0;
+    left: 0;
+    display: flex;
+    justify-content: space-between;
+    /* Logo left, baaki sab right */
+    align-items: center;
+    padding: 10px 20px;
+    background-color: #343541;
+    /* Dark theme background */
+    color: white;
+    z-index: 1000;
+}
+
+.right-section {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    /* Elements ke beech ka gap */
+}
+
+.auth-group {
+    display: flex;
+    gap: 8px;
+}
+
+.auth-group input {
+    padding: 5px 10px;
+    border-radius: 4px;
+    border: 1px solid #565869;
+    background: #40414f;
+    color: white;
+}
+
+/* Aapka Circle Avatar */
+.avatar-circle {
+    width: 35px;
+    height: 35px;
+    background-color: #10a37f;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.input-area-container button {
+    height: 42px;             /* Buttons ki height bhi input ke barabar (42px) */
+    padding: 0 20px;          /* Left-Right spacing text ke hisab se */
+    font-size: 0.95rem;
+    font-weight: 500;
+    color: white;
+    background-color: #3b82f6; /* Premium Blue */
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;      /* Text center alignment */
+    justify-content: center;
+    white-space: nowrap;      /* Text ko tutne se rokne ke liye */
+    box-sizing: border-box;
+    transition: all 0.2s ease;
+}
+
+.input-area-container {
+    display: flex;
+    align-items: center;
+    gap: 12px;                /* Sabhi elements ke beech barabar gap */
+    background-color: #ffffff; /* Aapke chat section ka white background */
+    padding: 15px 24px;       /* Top-bottom aur Left-right padding */
+    width: 100%;              /* 🔥 Isse container left se right poora stretch ho jayega */
+    box-sizing: border-box;   /* Width ko screen se baahar jaane se rokega */
+}
+
+/* Input box baki bachi hui poori jagah le lega */
+#msg-input {
+    flex: 1;
+    height: 42px; /* Fixed height sabke liye */
+    padding: 0 15px;
+    border-radius: 8px;
+    border: none;
+    background-color: #0f172a;
+    color: white;
+    outline: none;
+    box-sizing: border-box;
+}
+
+/* Voice button ko gol aur sahi size ka rakhne ke liye */
+.voice-btn {
+    width: 42px;           /* Height ke barabar width taaki perfect square rounded dikhe */
+    padding: 0 !important; /* Isme text nahi hai toh extra padding ki zaroorat nahi */
+}
+.input-area-container button:hover {
+    background-color: #2563eb;
+    transform: translateY(-1px);
+}
+
+/* Active hone par Green blink hoga */
+.voice-btn.active {
+    background-color: #22c55e !important;
+    box-shadow: 0 0 12px rgba(34, 197, 94, 0.6);
+}
+
+.chat-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.chat-search-container input {
+    width: 200px;
+    padding: 6px 12px;
+    font-size: 0.9rem;
+    border: 1px solid #cbd5e1;
+    border-radius: 20px;
+    outline: none;
+    background-color: #f8fafc;
+    transition: all 0.3s ease;
+}
+
+/* Click karne par thoda bada aur highlight hoga */
+.chat-search-container input:focus {
+    width: 250px;
+    border-color: #3b82f6;
+    background-color: #ffffff;
+    box-shadow: 0 0 8px rgba(59, 130, 246, 0.2);
+}
+
+/* Jo text match hoga usko highlight karne ke liye classic yellow background */
+.highlight-text {
+    background-color: #fde047;
+    color: #000000;
+    padding: 0 2px;
+    border-radius: 2px;
+}
+
+/* Engine status layout container */
+.engine-panel {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: bold;
+    font-size: 1rem;
+    margin-bottom: 12px;
+}
+
+/* Status dot ki basic design */
+.status-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    display: inline-block;
+    transition: all 0.3s ease;
+}
+
+/* 1. Active State (Classic Green) */
+.active-dot {
+    background-color: #4ade80;
+    box-shadow: 0 0 8px #4ade80;
+}
+
+/* 2. Listening State (Blinking Yellow) */
+.listening-dot {
+    background-color: #eab308;
+    box-shadow: 0 0 10px #eab308;
+    animation: enginePulse 1s infinite alternate;
+}
+
+/* 3. Thinking State (Breathing Blue) */
+.thinking-dot {
+    background-color: #3b82f6;
+    box-shadow: 0 0 10px #3b82f6;
+    animation: enginePulse 1.3s infinite alternate;
+}
+
+/* 4. Speaking State (Glowing Purple) */
+.speaking-dot {
+    background-color: #a855f7;
+    box-shadow: 0 0 12px #a855f7;
+}
+
+/* Real-time pulse animation for dynamic feel */
+@keyframes enginePulse {
+    0% { transform: scale(0.9); opacity: 0.6; }
+    100% { transform: scale(1.15); opacity: 1; }
+}

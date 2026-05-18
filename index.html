@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mind-pro AI - Workspace</title>
+    <link rel="icon" href="data:,">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+</head>
+
+<body>
+
+    <div id="login-page" class="auth-container">
+        <div class="login-box">
+
+            <div id="step-0">
+                <h2>Mind-pro AI</h2>
+                <p>Please select an option to continue</p>
+                <div class="auth-options" style="display: flex; justify-content: space-around; margin-top: 20px;">
+                    <div class="option-box" onclick="showAuth('login')" style="cursor:pointer; text-align:center;">
+                        <i class="fas fa-sign-in-alt" style="font-size: 30px; color: #4a90e2;"></i>
+                        <div style="margin-top:10px;">Login</div>
+                    </div>
+
+                    <div class="option-box" onclick="showAuth('signup')" style="cursor:pointer; text-align:center;">
+                        <i class="fas fa-user-plus" style="font-size: 30px; color: #4ade80;"></i>
+                        <div style="margin-top:10px;">New Signup</div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="step-1" style="display:none;">
+                <h2 id="auth-title">Verification</h2>
+                <p id="auth-desc">Enter Email for OTP</p>
+                <input type="email" id="email-input" placeholder="example@gmail.com">
+                <button onclick="sendOTP()">Send OTP</button>
+                <p onclick="location.reload()" style="cursor:pointer; color:gray; font-size:12px; margin-top:15px;">←
+                    Back</p>
+            </div>
+
+            <div id="step-2" style="display:none;">
+                <h2>Verify OTP</h2>
+
+                <p>Enter OTP sent to your Email</p>
+                <input type="text" id="otp-input" placeholder="Enter OTP">
+                <button onclick="verifyOTP()">Verify OTP</button>
+                <p onclick="location.reload()" style="cursor:pointer; color:blue; font-size:12px; margin-top:10px;">
+                    Change Email</p>
+            </div>
+        </div>
+    </div>
+
+    <div id="name-page" class="auth-container" style="display:none;">
+        <div class="login-box">
+            <h2>Welcome to Mind-pro AI</h2>
+            <p>Enter your name</p>
+            <input type="text" id="username" placeholder="Your Name..." autocomplete="off">
+            <button onclick="login()">Enter Workspace</button>
+        </div>
+    </div>
+
+    <div id="chat-page" class="app-container" style="display:none;">
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="version-control"
+                    style="display: flex; align-items: center; margin-bottom: 20px; position: relative;">
+
+                    <button id="menu-toggle" onclick="toggleVersionMenu(event)"
+                        style="background:none; border:none; color:white; font-size:1.5rem; cursor:pointer; padding:0; margin-right:12px; display: flex; align-items: center;">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                    <span id="current-version-title"
+                        style="font-weight:bold; color:#4ade80; font-size: 1.1rem;">Mind-pro Basic</span>
+
+                    <div id="version-menu"
+                        style="display: none; position: absolute; top: 40px; left: 0; background: #1e293b; border: 1px solid #334155; border-radius: 8px; width: 230px; z-index: 9999; box-shadow: 0 10px 25px rgba(0,0,0,0.5); overflow: hidden;">
+
+                        <div class="version-item" onclick="selectVersion('basic')"
+                            style="display: flex; align-items: center; gap: 12px; padding: 12px 15px; cursor: pointer; border-bottom: 1px solid #334155; transition: background 0.2s;">
+                            <i class="fas fa-leaf" style="color:#94a3b8;"></i>
+                            <div>
+                                <strong style="color: #f1f5f9; font-size: 0.9rem; display: block;">Basic</strong>
+                                <p style="margin: 0; font-size: 0.75rem; color: #94a3b8;">Unlimited standard messages
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="version-item" onclick="selectVersion('advance')"
+                            style="display: flex; align-items: center; gap: 12px; padding: 12px 15px; cursor: pointer; border-bottom: 1px solid #334155; transition: background 0.2s;">
+                            <i class="fas fa-bolt" style="color:#3b82f6;"></i>
+                            <div>
+                                <strong style="color: #f1f5f9; font-size: 0.9rem; display: block;">Advance</strong>
+                                <p style="margin: 0; font-size: 0.75rem; color: #94a3b8;">Faster & Smarter (5 msg limit)
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="version-item" onclick="selectVersion('pro')"
+                            style="display: flex; align-items: center; gap: 12px; padding: 12px 15px; cursor: pointer; transition: background 0.2s;">
+                            <i class="fas fa-crown" style="color:#a855f7;"></i>
+                            <div>
+                                <strong style="color: #f1f5f9; font-size: 0.9rem; display: block;">Pro</strong>
+                                <p style="margin: 0; font-size: 0.75rem; color: #94a3b8;">GPT-4o Logic (3 msg limit)</p>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+                <div class="engine-panel">
+                    <span id="engine-dot" class="status-dot active-dot"></span>
+                    <span id="engine-text">Engine: Active</span>
+                </div>
+
+                <button class="logout-btn" onclick="logout()"
+                    style="background:#ff4b2b; color:white; border:none; padding:5px 10px; border-radius:5px; cursor:pointer; margin-bottom:10px; width:100%;">
+                    <i class="fas fa-sign-out-alt"></i> Logout
+                </button>
+            </div>
+            <div class="chat-list" id="session-list"></div>
+        </aside>
+
+        <main class="chat-window">
+            <div class="chat-header">
+                <h2>Mind-pro AI</h2>
+                <div class="chat-search-container"><input type="text" id="chat-word-search"
+                        placeholder="🔍 Search in this chat..." oninput="searchChatMessages(event)"
+                        onkeydown="handleSearchEnter(event)">
+                </div>
+                <div class="right-section">
+
+                </div>
+                <div class="profile-container" style="position: relative; cursor: pointer;">
+                    <div id="user-avatar" class="avatar-circle" onclick="toggleProfilePopup()">
+                        style="background-color:#10a37f; color: white; width: 40px; height: 40px; border-radius: 50%;
+                        display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 20px;
+                        ?
+                    </div>
+
+                    <div id="profile-popup"
+                        style="display: none; position: absolute; top: 50px; right: 0; background: #2b2c33; border: 1px solid #444; padding: 15px; border-radius: 10px; z-index: 1000; min-width: 200px; box-shadow: 0 4px 15px rgba(0,0,0,0.3);">
+                        <p style="margin: 0; font-size: 12px; color: #8e8ea0;">Signed in as</p>
+                        <div id="popup-email"
+                            style="color: white; font-weight: bold; margin-bottom: 15px; word-break: break-all;">
+                            user@email.com</div>
+                        <button onclick="logout()"
+                            style="width: 100%; background: #ef4444; color: white; border: none; padding: 8px; border-radius: 5px; cursor: pointer; font-weight: bold;">Logout</button>
+                    </div>
+                </div>
+            </div>
+            <div class="message-area" id="message-area"></div>
+            <div class="input-area">
+                <div class="input-area-container"> <input type="text" id="msg-input"
+                        placeholder="Ask anything to Mind-pro AI...">
+                </div>
+                <button id="voice-toggle-btn" class="voice-btn" title="Toggle Voice Mode">🎙️</button>
+                <button id="new-chat-btn" onclick="createNewChat()">+ New Chat</button>
+                <button id="send-btn" onclick="askAI()">Send</button>
+            </div>
+        </main>
+    </div>
+
+    <div id="success-popup" class="popup-toast" style="display:none;">
+        ✅ Login Successful! Welcome to Mind-pro.
+    </div>
+<script>
+    // 1. Teeno versions ki chat history alag-alag maintain karne ke liye memory
+    let chatPanels = {
+        basic: localStorage.getItem('mindpro_chat_basic') || '',
+        advance: localStorage.getItem('mindpro_chat_advance') || '',
+        pro: localStorage.getItem('mindpro_chat_pro') || ''
+    };
+
+    let currentTier = 'basic'; // Shuruat hamesha basic se hogi
+
+    // 2. Page load hote hi basic chat ko setup karne ka logic
+    window.addEventListener('DOMContentLoaded', () => {
+        // 🔴 APNE CHAT MESSAGES WALE BOX KI ID CHECK KAREIN (Yahan humne 'chat-messages' liya hai)
+        const chatDisplay = document.getElementById('chat-messages');
+        
+        if (chatDisplay) {
+            // Agar pehli baar app khula hai aur memory blank hai, toh pehla chat bubble save karo
+            if (!localStorage.getItem('mindpro_chat_basic') && chatDisplay.innerHTML.trim() !== '') {
+                chatPanels.basic = chatDisplay.innerHTML;
+                localStorage.setItem('mindpro_chat_basic', chatDisplay.innerHTML);
+            } else if (localStorage.getItem('mindpro_chat_basic')) {
+                // Pehle se saved chat ko screen par load karo
+                chatDisplay.innerHTML = chatPanels[currentTier];
+            }
+        }
+    });
+
+    // 3. Hamburger Menu Dropdown Toggle Function
+    function toggleVersionMenu(event) {
+        if (event) event.stopPropagation();
+        const menu = document.getElementById('version-menu');
+        if (menu) {
+            menu.style.display = (menu.style.display === 'none' || menu.style.display === '') ? 'block' : 'none';
+        }
+    }
+
+    // 4. MAIN VERSION CHANGER FUNCTION (Layout bilkul nahi tootega, sirf chat badlegi)
+    function selectVersion(tier) {
+        const chatDisplay = document.getElementById('chat-messages'); // Apne chat box ki ID check karein
+
+        if (chatDisplay) {
+            // CURRENT CHAT KO LOCK/SAVE KARO
+            chatPanels[currentTier] = chatDisplay.innerHTML;
+            localStorage.setItem(`mindpro_chat_${currentTier}`, chatDisplay.innerHTML);
+        }
+
+        // TIER UPDATE KARO
+        currentTier = tier;
+
+        if (chatDisplay) {
+            // AGAR IS VERSION MEIN PEHLE SE CHAT HAI TO WAHI DIKHAO
+            if (chatPanels[currentTier] && chatPanels[currentTier].trim() !== '') {
+                chatDisplay.innerHTML = chatPanels[currentTier];
+            } else {
+                // 🔥 NAYA CHAT WINDOW: EXACT BASIC JAISA BUBBLE (Lekin ekdum fresh start)
+                chatDisplay.innerHTML = `
+                    <div class="message-row admin-message-row" style="display: flex; margin-bottom: 20px;">
+                        <div class="message-content admin-message" style="background: #1e293b; color: #f1f5f9; padding: 15px 20px; border-radius: 8px; max-width: 75%; font-family: sans-serif; box-shadow: 0 4px 15px rgba(0,0,0,0.2);">
+                            Hi there! 😊 How can I assist you today in <strong>Mind-pro ${tier.toUpperCase()}</strong>? If you have any questions or topics in mind, feel free to share!
+                        </div>
+                    </div>
+                `;
+            }
+        }
+
+        // Sidebar Main Header Ka Text aur Color badlein
+        const title = document.getElementById('current-version-title');
+        if (title) {
+            if (tier === 'basic') {
+                title.innerText = "Mind-pro Basic";
+                title.style.color = "#4ade80";
+            } else if (tier === 'advance') {
+                title.innerText = "Mind-pro Advance";
+                title.style.color = "#3b82f6";
+            } else if (tier === 'pro') {
+                title.innerText = "Mind-pro Pro";
+                title.style.color = "#a855f7";
+            }
+        }
+
+        // Dropdown menu close karo
+        const menu = document.getElementById('version-menu');
+        if (menu) menu.style.display = 'none';
+    }
+
+    // Bahar click karne par menu close ho jaye
+    window.addEventListener('click', function(event) {
+        const menu = document.getElementById('version-menu');
+        const toggleBtn = document.getElementById('menu-toggle');
+        if (menu && menu.style.display === 'block' && !menu.contains(event.target) && event.target !== toggleBtn) {
+            menu.style.display = 'none';
+        }
+    });
+</script>
+
+    <script src="script.js"></script>
+
+</body>
+
+</html>
