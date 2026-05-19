@@ -9,14 +9,95 @@ const sessionList = document.getElementById('session-list');
 let isVoiceMode = false; // By default voice mode off rahega
 let recognition = null;
 
-let chatSessions = [];
+let allChatSessions = []; // 🔥 Yeh database ki saari chats ka backup rakhega
+  let chatSessions = [];// Yeh sirf current tier ki chats dikhayega
+let currentTier = 'basic'; // Default tier
+
+
 let currentSessionId = null;
 let allMessagesArray = []; // Start mein khali
-let isPremiumUser = false; // Default mein false rakhein
+ // Default mein false rakhein
 
+// 1. Teeno tiers ke chat messages ki memory (localStorage ke saath)
+let chatPanels = {
+    basic: localStorage.getItem('mindpro_messages_basic') || '',
+    advance: localStorage.getItem('mindpro_messages_advance') || '',
+    pro: localStorage.getItem('mindpro_messages_pro') || ''
+};
+
+let currentTier = 'basic'; // Default shuruat hamesha basic se hogi
+let isPremiumUser = false; // Subscription check ke liye
+
+// 2. Message Limits ke Counters
+let advanceMessageCounter = parseInt(localStorage.getItem('advance_msg_counter')) || 0;
+let proMessageCounter = parseInt(localStorage.getItem('pro_msg_counter')) || 0;
+
+const MAX_ADVANCE_MESSAGES = 5; // 5 message ki limit Advance ke liye
+const MAX_PRO_MESSAGES = 3;    // 3 message ki limit Pro ke liye
+
+// 3. Page Load hote hi Basic ka exact structure aur welcome bubble clone karne ke liye
+window.addEventListener('DOMContentLoaded', () => {
+    const chatDisplay = document.getElementById('chat-messages'); // <-- Apne chat messages wale container ki ID dekhna
+    
+    if (chatDisplay) {
+        // Agar pehli baar website khuli hai, toh Basic ke andar jo original design aur bubble hai use sabme copy kar do
+        if (!localStorage.getItem('mindpro_messages_basic') && chatDisplay.innerHTML.trim() !== '') {
+            const initialBasicStructure = chatDisplay.innerHTML;
+            chatPanels.basic = initialBasicStructure;
+            chatPanels.advance = initialBasicStructure;
+            chatPanels.pro = initialBasicStructure;
+            
+            localStorage.setItem('mindpro_messages_basic', initialBasicStructure);
+            localStorage.setItem('mindpro_messages_advance', initialBasicStructure);
+            localStorage.setItem('mindpro_messages_pro', initialBasicStructure);
+        } else {
+            // Agar pehle se chat history saved hai, toh wahi load karo
+            chatDisplay.innerHTML = chatPanels[currentTier];
+        }
+    }
+});
+
+
+function selectVersion(tier) {
+    const chatDisplay = document.getElementById('chat-messages');
+
+    if (chatDisplay) {
+        // 💾 1. Pehle current version ki chat messages ko browser memory me save karo
+        chatPanels[currentTier] = chatDisplay.innerHTML;
+        localStorage.setItem(`mindpro_messages_${currentTier}`, chatDisplay.innerHTML);
+    }
+
+    // 🔄 2. Version badlein
+
+    if (chatDisplay) {
+        // 🚀 3. Naye version ki chat load karo (Yeh hamesha basic jaisa hi dikhega)
+        chatDisplay.innerHTML = chatPanels[currentTier] || '';
+    }
+
+    // Sidebar ka Text aur Color update karne ke liye (Bina structure chhede)
+    const title = document.getElementById('current-version-title');
+    if (title) {
+        if (tier === 'basic') {
+            title.innerText = "Mind-pro Basic";
+            title.style.color = "#4ade80";
+        } else if (tier === 'advance') {
+            title.innerText = "Mind-pro Advance";
+            title.style.color = "#3b82f6";
+        } else if (tier === 'pro') {
+            title.innerText = "Mind-pro Pro";
+            title.style.color = "#a855f7";
+        }
+    }
+
+    setupChatsForCurrentTier();
+
+    toggleVersionMenu(); // Hamburger Dropdown Menu close karein
+}
 // ==========================================
 // 3. CHAT HISTORY (Fixes Login/Logout Persistence)
 // ==========================================
+
+
 
 // Menu ko kholne aur band karne ka function
 function toggleVersionMenu(event) {
@@ -39,8 +120,6 @@ window.addEventListener('click', function(event) {
         menu.style.display = 'none';
     }
 });
-
-
 async function loadStoredChats(email) {
     if (!email) return;
     try {
@@ -56,16 +135,16 @@ async function loadStoredChats(email) {
         const data = await response.json();
         console.log("Server Response Data:", data);
 
-        if (data.success && Array.isArray(data.chats) && data.chats.length > 0) {
-            console.log("History found! Restoring chats...");
-            chatSessions = data.chats;
-            currentSessionId = chatSessions[0].id;
-            renderSidebar();
-            renderMessages();
-
+        if (data.success && Array.isArray(data.chats)) {
+            // 1. Saari chats ko Master backup list me save karo
+            allChatSessions = data.chats; 
+            
+            // 2. Current tier ki chats ko screen par load karne wala function call karo
+            setupChatsForCurrentTier();
         }
         else {
             console.log("No previous history found on server.");
+            allChatSessions = [];
             chatSessions = [];
             createNewChat();
         }
@@ -73,8 +152,31 @@ async function loadStoredChats(email) {
     } catch (error) {
         console.error("Frontend loading error:", error);
     }
+} 
 
+
+function setupChatsForCurrentTier() {
+    // Master list me se sirf current tier ki chats filter karo
+    chatSessions = allChatSessions.filter(session => {
+        const savedTier = session.tier || 'basic'; // Agar tier nahi hai to basic maan lo
+        return savedTier === currentTier;
+    });
+
+    // Agar is tier me pehle se koi chat banti hui hai to use restore karo
+    if (chatSessions.length > 0) {
+        console.log(`History found for ${currentTier}! Restoring chats...`);
+        currentSessionId = chatSessions[0].id;
+        renderSidebar();
+        renderMessages();
+    } 
+    // 🔥 AGAR KOI CHAT NAHI HAI, TO EKDOM FRESH NEW CHAT SE START KARO!
+    else {
+        console.log(`No previous history found for ${currentTier}. Starting fresh new chat.`);
+        chatSessions = [];
+        createNewChat();
+    }
 }
+
 
 // ==========================================
 // 1. DATABASE SYNC FUNCTIONS
@@ -305,10 +407,6 @@ function showAuth(type) {
     }
 }
 
-function logout() {
-    localStorage.clear();
-    location.reload();
-}
 
 // ==========================================
 // 3. CHAT LOGIC WITH AUTO-SAVE
@@ -319,16 +417,20 @@ function createNewChat() {
     const session = {
         id: newId,
         title: "New Conversation",
+        tier: currentTier, // Naye session ke saath current tier bhi save karenge
         messages: [{ sender: 'ai', text: "Hello! I am Mind-pro AI. How can I help you?" }]
     };
 
     chatSessions.unshift(session);
     currentSessionId = newId;
+    allChatSessions.unshift(newSession);
 
     renderSidebar();
     renderMessages();
     syncWithDB();
 }
+
+currentTier
 
 // 1. Browser ke Speech Recognition ko initialize karein
 if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
@@ -367,11 +469,38 @@ if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
     alert("⚠️ Aapka browser voice recognition support nahi karta. Please Google Chrome use karein.");
 }
 
+async function askAI()  {
+    const msgInput = document.getElementById('msg-input'); // Apni input field ki ID verify kar lena
+    if (!msgInput) return;
+    const query = msgInput.value.trim();
+    if (!query) return;
 
+    // ⛔ MESSAGE LIMIT GATEKEEPER
+    if (!isPremiumUser) {
+        if (currentTier === 'advance') {
+            if (advanceMessageCounter >= MAX_ADVANCE_MESSAGES) {
+                alert("Our limit is expired, please subscribe this Brain! 🧠⚡");
+                msgInput.value = ""; 
+                if (typeof openPremiumModal === 'function') openPremiumModal();
+                return; // Code yahi ruk jayega, message send nahi hoga
+            }
+            advanceMessageCounter++;
+            localStorage.setItem('advance_msg_counter', advanceMessageCounter.toString());
+        }
+        
+        else if (currentTier === 'pro') {
+            if (proMessageCounter >= MAX_PRO_MESSAGES) {
+                alert("Our limit is expired, please subscribe this Brain! 🧠💎");
+                msgInput.value = ""; 
+                if (typeof openPremiumModal === 'function') openPremiumModal();
+                return; // Code yahi ruk jayega, message send nahi hoga
+            }
+            proMessageCounter++;
+            localStorage.setItem('pro_msg_counter', proMessageCounter.toString());
+        }
+    }
 
-async function askAI() {
-
-    // Iske niche aapka purana normal message send aur append karne ka code rahega...
+    // Iske niche aapka purana fetch aur message append karne ka code jaisa hai vaisa hi rahega...
 
     const text = msgInput.value.trim();
     if (!text) return;
@@ -566,15 +695,6 @@ function showSuccessPopup() {
     }
 }
 
-
-// --- Popup Open/Close Logic ---
-function toggleProfilePopup() {
-    const popup = document.getElementById('profile-popup');
-    if (popup) {
-        popup.style.display = (popup.style.display === 'block') ? 'none' : 'block';
-    }
-}
-
 // 2. Button Click Listener
 // Isko check karein ki ye kisi dusre function ke andar band na ho, bahar khula rahe
 const voiceToggleBtn = document.getElementById('voice-toggle-btn');
@@ -664,17 +784,6 @@ function handleSearchEnter(event) {
         document.getElementById('chat-word-search').blur(); // Input box se focus hatayein
     }
 }
-// 1. Enter key dabne par search strictly trigger hoga
-function handleSearchEnter(event) {
-    if (event && event.key === 'Enter') {
-        event.preventDefault(); // Page reload hone se rokein
-        console.log("Enter pressed! Filtering messages...");
-        
-        searchChatMessages(event); // Main filter call karein
-        document.getElementById('chat-word-search').blur(); // Input se focus hatayein
-    }
-}
-
 // 2. Main Search aur Filter Function
 function searchChatMessages(event) {
     // Search box se value uthayein

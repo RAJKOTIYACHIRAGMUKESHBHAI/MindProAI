@@ -25,10 +25,13 @@ console.log("🛠️ DEBUG - Cleaned URI:", dbURI.substring(0, 20) + "..."); // 
 if (!dbURI.startsWith("mongodb")) {
     console.log("❌ ERROR: URI abhi bhi theek nahi hai. Kripya .env check karein.");
 } else {
-    mongoose.connect(dbURI)
+    // Yahan mongoose.connect ke andar family: 4 option pass karein
+    mongoose.connect(dbURI, { family: 4 })
         .then(() => console.log("☁️ ✅ MongoDB Cloud Connected Successfully!"))
         .catch(err => console.log("❌ MongoDB Connection Error:", err.message));
 }
+
+
 
 // ✅ SAHI CODE:
 const UserSchema = new mongoose.Schema({
