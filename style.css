@@ -11,7 +11,6 @@ body {
     overflow: hidden;
 }
 
-/* Auth pages */
 .auth-container {
     display: flex;
     justify-content: center;
@@ -559,4 +558,41 @@ code {
 @keyframes enginePulse {
     0% { transform: scale(0.9); opacity: 0.6; }
     100% { transform: scale(1.15); opacity: 1; }
+}
+
+/* Container alignment */
+.chat-input-container {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    gap: 10px;
+    padding: 10px;
+}
+
+/* Premium Upload Button Styling */
+.inline-premium-upload {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #4A90E2 0%, #5038ED 100%);
+    color: white;
+    font-size: 20px;
+    cursor: pointer;
+    box-shadow: 0 4px 10px rgba(80, 56, 237, 0.3);
+    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    flex-shrink: 0; /* Button ko chota hone se rokega */
+}
+
+/* Hover Effect */
+.inline-premium-upload:hover {
+    transform: scale(1.1) rotate(5deg);
+    box-shadow: 0 6px 15px rgba(80, 56, 237, 0.5);
+}
+
+/* Click Effect */
+.inline-premium-upload:active {
+    transform: scale(0.9);
 }

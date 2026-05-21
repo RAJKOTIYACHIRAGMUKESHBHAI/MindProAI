@@ -1,6 +1,6 @@
 const { exec } = require('child_process');
 const path = require('path');
-const fs = require('fs'); // Declared once at the top!
+const fs = require('fs');
 
 const MONGODUMP_PATH = path.join(__dirname, 'tools', 'mongodump.exe');
 const DB_NAME = 'mindproAI';
@@ -24,8 +24,6 @@ exec(cmd, (error, stdout, stderr) => {
     
     console.log(`✅ Success! Backup created: ${fileName}`);
 
-    // --- CLEANUP LOGIC ---
-    // This part runs AFTER the backup is successful
     const files = fs.readdirSync(BACKUP_PATH);
     const sevenDaysAgo = Date.now() - (7 * 24 * 60 * 60 * 1000);
 

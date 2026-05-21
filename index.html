@@ -93,7 +93,8 @@
                             <i class="fas fa-bolt" style="color:#3b82f6;"></i>
                             <div>
                                 <strong style="color: #f1f5f9; font-size: 0.9rem; display: block;">Advance</strong>
-                                <p style="margin: 0; font-size: 0.75rem; color: #94a3b8;">Faster & Smarter (5 msg limit)
+                                <p style="margin: 0; font-size: 0.75rem; color: #94a3b8;">Faster & Smarter (20 msg
+                                    limit)
                                 </p>
                             </div>
                         </div>
@@ -103,7 +104,7 @@
                             <i class="fas fa-crown" style="color:#a855f7;"></i>
                             <div>
                                 <strong style="color: #f1f5f9; font-size: 0.9rem; display: block;">Pro</strong>
-                                <p style="margin: 0; font-size: 0.75rem; color: #94a3b8;">GPT-4o Logic (3 msg limit)</p>
+                                <p style="margin: 0; font-size: 0.75rem; color: #94a3b8;"> (10 msg limit)</p>
                             </div>
                         </div>
 
@@ -133,10 +134,7 @@
 
                 </div>
                 <div class="profile-container" style="position: relative; cursor: pointer;">
-                    <div id="user-avatar" class="avatar-circle" onclick="toggleProfilePopup()">
-                        style="background-color:#10a37f; color: white; width: 40px; height: 40px; border-radius: 50%;
-                        display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 20px;
-                        ?
+                    <div id="user-avatar" class="avatar-circle" onclick="toggleProfilePopup()" style="background-color:#10a37f; color: white; width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 20px;">
                     </div>
 
                     <div id="profile-popup"
@@ -151,9 +149,20 @@
                 </div>
             </div>
             <div class="message-area" id="message-area"></div>
+            <div id="doc-preview-badge"
+                style="display: none; background: #e0f7fa; color: #006064; padding: 6px 12px; font-size: 13px; border-radius: 20px; max-width: fit-content; align-items: center; gap: 8px; border: 1px solid #b2ebf2; margin-bottom: 10px; margin-left: 20px;">
+
+                <span id="doc-name-text" style="font-weight: 500;">📄 filename.txt</span>
+                <span id="clear-doc-btn"
+                    style="cursor: pointer; font-weight: bold; color: #d32f2f; margin-left: 5px;">✕</span>
+            </div>
             <div class="input-area">
-                <div class="input-area-container"> <input type="text" id="msg-input"
-                        placeholder="Ask anything to Mind-pro AI...">
+                <div class="input-area-container">
+                    <label for="doc-file-input" id="doc-upload-btn" class="inline-premium-upload" style="display: none;">
+                        📎
+                    </label>
+                    <input type="file" id="doc-file-input" accept=".pdf,.doc,.docx,.txt" style="display: none;">
+                    <input type="text" id="msg-input" placeholder="Ask anything to Mind-pro AI...">
                 </div>
                 <button id="voice-toggle-btn" class="voice-btn" title="Toggle Voice Mode">🎙️</button>
                 <button id="new-chat-btn" onclick="createNewChat()">+ New Chat</button>
@@ -165,6 +174,34 @@
     <div id="success-popup" class="popup-toast" style="display:none;">
         ✅ Login Successful! Welcome to Mind-pro.
     </div>
+
+    <!-- PayPal Payment Modal -->
+    <div id="payment-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 10000; display: flex; align-items: center; justify-content: center;">
+        <div style="background: white; padding: 40px; border-radius: 15px; max-width: 500px; box-shadow: 0 10px 40px rgba(0,0,0,0.3); text-align: center;">
+            <h2>Upgrade to Premium</h2>
+            <p style="color: #666; margin-bottom: 30px;">Choose your plan and enjoy premium features</p>
+            
+            <div style="display: flex; gap: 20px; margin-bottom: 30px;">
+                <div style="flex: 1; border: 2px solid #3b82f6; padding: 20px; border-radius: 10px; cursor: pointer;" onclick="selectPlan('advance')">
+                    <h3 style="color: #3b82f6; margin: 0;">Advance</h3>
+                    <p style="margin: 10px 0; font-size: 24px; font-weight: bold;">₹150</p>
+                    <p style="margin: 0; color: #666; font-size: 14px;">20 chats/month</p>
+                </div>
+                
+                <div style="flex: 1; border: 2px solid #a855f7; padding: 20px; border-radius: 10px; cursor: pointer;" onclick="selectPlan('pro')">
+                    <h3 style="color: #a855f7; margin: 0;">Pro</h3>
+                    <p style="margin: 10px 0; font-size: 24px; font-weight: bold;">₹300</p>
+                    <p style="margin: 0; color: #666; font-size: 14px;">10 chats/month</p>
+                </div>
+            </div>
+
+            <div id="paypal-button-container" style="margin-bottom: 20px;"></div>
+            
+            <button onclick="closePaymentModal()" style="background: #e5e7eb; color: #333; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; font-weight: bold;">Cancel</button>
+        </div>
+    </div>
+
+    <script src="https://www.paypal.com/sdk/js?client-id=AWtrGlj5EgyXFL3-m5oiQUXNApz_vOfRZIssHqc3kpA4k5SEqi4Ri6zLHLhLvE89P6XI0SkZH1odkExh"></script>
     <script src="script.js"></script>
 
 </body>
