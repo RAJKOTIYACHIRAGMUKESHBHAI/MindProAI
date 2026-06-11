@@ -419,19 +419,24 @@ code {
 }
 
 .input-area-container button {
-    height: 42px;             /* Buttons ki height bhi input ke barabar (42px) */
-    padding: 0 20px;          /* Left-Right spacing text ke hisab se */
+    height: 42px;
+    /* Buttons ki height bhi input ke barabar (42px) */
+    padding: 0 20px;
+    /* Left-Right spacing text ke hisab se */
     font-size: 0.95rem;
     font-weight: 500;
     color: white;
-    background-color: #3b82f6; /* Premium Blue */
+    background-color: #3b82f6;
+    /* Premium Blue */
     border: none;
     border-radius: 8px;
     cursor: pointer;
     display: inline-flex;
-    align-items: center;      /* Text center alignment */
+    align-items: center;
+    /* Text center alignment */
     justify-content: center;
-    white-space: nowrap;      /* Text ko tutne se rokne ke liye */
+    white-space: nowrap;
+    /* Text ko tutne se rokne ke liye */
     box-sizing: border-box;
     transition: all 0.2s ease;
 }
@@ -439,17 +444,23 @@ code {
 .input-area-container {
     display: flex;
     align-items: center;
-    gap: 12px;                /* Sabhi elements ke beech barabar gap */
-    background-color: #ffffff; /* Aapke chat section ka white background */
-    padding: 15px 24px;       /* Top-bottom aur Left-right padding */
-    width: 100%;              /* 🔥 Isse container left se right poora stretch ho jayega */
-    box-sizing: border-box;   /* Width ko screen se baahar jaane se rokega */
+    gap: 12px;
+    /* Sabhi elements ke beech barabar gap */
+    background-color: #ffffff;
+    /* Aapke chat section ka white background */
+    padding: 15px 24px;
+    /* Top-bottom aur Left-right padding */
+    width: 100%;
+    /* 🔥 Isse container left se right poora stretch ho jayega */
+    box-sizing: border-box;
+    /* Width ko screen se baahar jaane se rokega */
 }
 
 /* Input box baki bachi hui poori jagah le lega */
 #msg-input {
     flex: 1;
-    height: 42px; /* Fixed height sabke liye */
+    height: 42px;
+    /* Fixed height sabke liye */
     padding: 0 15px;
     border-radius: 8px;
     border: none;
@@ -461,9 +472,12 @@ code {
 
 /* Voice button ko gol aur sahi size ka rakhne ke liye */
 .voice-btn {
-    width: 42px;           /* Height ke barabar width taaki perfect square rounded dikhe */
-    padding: 0 !important; /* Isme text nahi hai toh extra padding ki zaroorat nahi */
+    width: 42px;
+    /* Height ke barabar width taaki perfect square rounded dikhe */
+    padding: 0 !important;
+    /* Isme text nahi hai toh extra padding ki zaroorat nahi */
 }
+
 .input-area-container button:hover {
     background-color: #2563eb;
     transform: translateY(-1px);
@@ -557,6 +571,13 @@ code {
 
 /* Real-time pulse animation for dynamic feel */
 @keyframes enginePulse {
-    0% { transform: scale(0.9); opacity: 0.6; }
-    100% { transform: scale(1.15); opacity: 1; }
+    0% {
+        transform: scale(0.9);
+        opacity: 0.6;
+    }
+
+    100% {
+        transform: scale(1.15);
+        opacity: 1;
+    }
 }

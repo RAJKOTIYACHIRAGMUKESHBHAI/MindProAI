@@ -5,7 +5,6 @@ const fs = require('fs');
 const BACKUP_PATH = path.join(__dirname, 'backups');
 const MONGO_RESTORE = path.join(__dirname, 'tools', 'mongorestore.exe');
 
-// 1. Get all files in backups folder and sort by newest
 const files = fs.readdirSync(BACKUP_PATH)
     .filter(file => file.endsWith('.gz'))
     .map(file => ({ name: file, time: fs.statSync(path.join(BACKUP_PATH, file)).mtime.getTime() }))
@@ -19,7 +18,6 @@ if (files.length === 0) {
 const LATEST_BACKUP = files[0].name;
 const FILE_PATH = path.join(BACKUP_PATH, LATEST_BACKUP);
 
-// 2. Run the restore command
 const cmd = `"${MONGO_RESTORE}" --nsInclude="mindproAI.*" --archive="${FILE_PATH}" --gzip`;
 
 console.log(`⚠️ Restoring from latest backup: ${LATEST_BACKUP}...`);
