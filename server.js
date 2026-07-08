@@ -178,10 +178,9 @@ const ai = new GoogleGenAI({
 const OPENROUTER_API_KEY = process.env.OPENROUTER_API_KEY;
 let otpStore = {};
 const transporter = nodemailer.createTransport({
-    service: 'gmail',
-    host: 'smtp.gmail.com', // Nayi line
-    port: 465,              // Nayi line
-    secure: true,           // Nayi line (port 465 ke liye zaroori)
+    host: 'smtp-relay.brevo.com',
+    port: 2525, 
+    secure: false, 
     auth: {
         user: process.env.EMAIL_USER,
         pass: process.env.EMAIL_PASS
